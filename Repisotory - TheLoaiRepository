@@ -1,0 +1,50 @@
+package Repository;
+
+import Model.SanPhamModel;
+import Model.TheLoaiModel;
+import Service.DB;
+import java.sql.*;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author ASUS
+ */
+public class TheLoaiRepository {
+
+    public ArrayList<TheLoaiModel> getAll() {
+        ArrayList<TheLoaiModel> list = new ArrayList<>();
+        String sql = "SELECT * FROM TheLoai";
+
+        try (Connection cn = DB.getConnection(); Statement st = cn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                list.add(new TheLoaiModel(
+                        rs.getString("MaTheLoai"),
+                        rs.getString("TenTheLoai")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public void insert(TheLoaiModel tl) {
+        String sql = "INSERT INTO TheLoai (MaTheLoai, TenTheLoai) VALUES (?, ?)";
+
+        try (Connection conn = DB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tl.getMaTheLoai());
+            ps.setString(2, tl.getTenTheLoai());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
