@@ -1,0 +1,115 @@
+package View;
+
+import Model.SanPhamModel;
+import Model.TheLoaiModel;
+import Service.SanPhamService;
+import Service.TheLoaiService;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+
+  public class SanPham extends javax.swing.JFrame {
+
+    public SanPhamService spSevice = new SanPhamService();
+    public TheLoaiService theLoaiService = new TheLoaiService();
+
+    void loadTable() {
+        DefaultTableModel model = (DefaultTableModel) tblBang.getModel();
+        model.setRowCount(0);
+        // trả về mảng chứa dữ liệu 
+        ArrayList<SanPhamModel> list = spSevice.getAll();
+        for (SanPhamModel sp : list) {
+            model.addRow(new Object[]{sp.getMaSP(), sp.getTenSP(), sp.getDonGia(), sp.getMaTheLoai()});
+        }
+    }
+
+    void loadCbo() {
+        ArrayList<TheLoaiModel> list = theLoaiService.getAll();
+        cbbChon.removeAllItems();
+        for (TheLoaiModel tl : list) {
+            cbbChon.addItem(tl.getMaTheLoai());
+        }
+    }
+
+    public void showDetail() {
+        int row = tblBang.getSelectedRow();
+        if (row >= 0) {
+            txtMaSP.setText(tblBang.getValueAt(row, 0).toString());
+            txtTen.setText(tblBang.getValueAt(row, 1).toString());
+            txtDonGia.setText(tblBang.getValueAt(row, 2).toString());
+            cbbChon.setSelectedItem(tblBang.getValueAt(row, 3).toString());
+        }
+    }
+
+    /**
+     * Creates new form SanPham
+     */
+  public SanPham() {
+    initComponents();
+    loadCbo();     
+    loadTable();
+
+    
+    if (tblBang.getRowCount() > 0) {
+        tblBang.setRowSelectionInterval(0, 0); // chọn dòng đầu tiên
+        showDetail(); // hiển thị dòng đầu tiên lên form
+    }
+}
+
+      private void tblBangMouseClicked(java.awt.event.MouseEvent evt) {                                     
+        // TODO add your handling code here:
+        showDetail();
+    }                                    
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        // TODO add your handling code here:
+         try {
+        String maSp = txtMaSP.getText().trim();
+        String tenSp = txtTen.getText().trim();
+        double donGia = Double.parseDouble(txtDonGia.getText().trim());
+
+        // Vì bạn dùng comboBox kiểu String (mã thể loại)
+        String maTheLoai = (String) cbbChon.getSelectedItem();
+
+        SanPhamModel sp = new SanPhamModel(maSp, tenSp, donGia, maTheLoai);
+
+        spSevice.insert(sp);
+        JOptionPane.showMessageDialog(this, "Thêm thành công!");
+        loadTable();
+        clearForm(); // (tuỳ chọn) xóa trắng form sau khi thêm
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi thêm: " + e.getMessage());
+    }
+    }                                       
+
+    private void clearForm() {
+    txtMaSP.setText("");
+    txtTen.setText("");
+    txtDonGia.setText("");
+    cbbChon.setSelectedIndex(0);
+}
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {                                       
+        // TODO add your handling code here:
+        try {
+        String maSp = txtMaSP.getText().trim();
+        if (maSp.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để xóa");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        spSevice.delete(maSp);
+        JOptionPane.showMessageDialog(this, "Xóa thành công!");
+        loadTable();
+        clearForm(); // (tùy chọn)
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi xóa: " + e.getMessage());
+    }
+    }                                      
