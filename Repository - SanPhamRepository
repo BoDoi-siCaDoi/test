@@ -1,0 +1,87 @@
+package Repository;
+
+import Model.SanPhamModel;
+import java.util.ArrayList;
+import java.sql.*;
+import Service.DB;
+
+/**
+ *
+ * @author ASUS
+ */
+public class SanPhamRepository {
+
+    public ArrayList<SanPhamModel> getAll() {
+        ArrayList<SanPhamModel> list = new ArrayList<>();
+        String sql = "SELECT * FROM SanPham";
+
+        try (Connection cn = DB.getConnection();
+             Statement st = cn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                list.add(new SanPhamModel(
+                        rs.getString("MaSP"),
+                        rs.getString("TenSP"),
+                        rs.getDouble("DonGia"),
+                        rs.getString("MaTheLoai")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public void insert(SanPhamModel sp) {
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, DonGia, MaTheLoai) VALUES (?, ?, ?, ?)";
+
+        try (Connection con = DB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, sp.getMaSP());
+            ps.setString(2, sp.getTenSP());
+            ps.setDouble(3, sp.getDonGia());
+            ps.setString(4, sp.getMaTheLoai());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(SanPhamModel sp) {
+        String sql = "UPDATE SanPham SET TenSP = ?, DonGia = ?, MaTheLoai = ? WHERE MaSP = ?";
+
+        try (Connection con = DB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, sp.getTenSP());
+            ps.setDouble(2, sp.getDonGia());
+            ps.setString(3, sp.getMaTheLoai());
+            ps.setString(4, sp.getMaSP());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(String maSP) {
+        String sql = "DELETE FROM SanPham WHERE MaSP = ?";
+
+        try (Connection con = DB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, maSP);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
