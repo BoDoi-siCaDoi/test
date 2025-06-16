@@ -1,0 +1,26 @@
+package Service;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+/**
+ *
+ * @author ASUS
+ */
+public class DB {
+     public static Connection getConnection() {
+        try {
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=PTPM_SOF2043_FINAL;encrypt=false";
+            String user = "sa";
+            String pass = "1234"; 
+            return DriverManager.getConnection(url, user, pass);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Connection Connection() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+}
+}
