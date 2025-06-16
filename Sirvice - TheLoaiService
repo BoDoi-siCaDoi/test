@@ -1,0 +1,19 @@
+package Service;
+import Model.TheLoaiModel;
+import Repository.TheLoaiRepository;
+import java.util.ArrayList;
+/**
+ *
+ * @author ASUS
+ */
+public class TheLoaiService {
+    private final TheLoaiRepository repo = new TheLoaiRepository();
+
+    public ArrayList<TheLoaiModel> getAll() {
+        return repo.getAll();
+    }
+
+    public void insert(TheLoaiModel tl) {
+        repo.insert(tl);
+    }
+}
