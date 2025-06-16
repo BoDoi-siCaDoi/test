@@ -1,0 +1,30 @@
+package Service;
+
+import Model.SanPhamModel;
+import Repository.SanPhamRepository;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author ASUS
+ */
+public class SanPhamService {
+    private final SanPhamRepository repo = new SanPhamRepository();
+
+    public ArrayList<SanPhamModel> getAll() {
+        return repo.getAll();
+    }
+
+    public void insert(SanPhamModel sp) {
+        repo.insert(sp);
+    }
+
+    public void update(SanPhamModel sp) {
+        repo.update(sp);
+    }
+
+    public void delete(String maSP) {
+        repo.delete(maSP);
+    }
+
+}
